@@ -2,9 +2,9 @@ import React from 'react';
 
 const useMove = (callback :  (e: any)=> void) => {
     React.useEffect(() => {
-        document.addEventListener('mousemove', callback);
+        document.addEventListener('click', callback);
         return () => {
-          document.removeEventListener('mousemove', callback);
+          document.removeEventListener('click', callback);
         };
       }, [callback]);
 }

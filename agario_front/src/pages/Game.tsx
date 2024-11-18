@@ -5,42 +5,33 @@ import { io } from 'socket.io-client';
 const socket = io('http://localhost:3001'); 
 
 const Game = () => {
-    const { canvasRef, setTargetOffset, targetOffset,allPlayerRef, playerRef, setAllPlayer, setMousePosition} = usePlayer()
+    const { canvasRef, allPlayer,setPlayer, setAllPlayer} = usePlayer()
     React.useEffect(() => {
         if(!canvasRef.current)return
-        socket.emit('createPlayer', {width: canvasRef.current.width, height: canvasRef.current?.height})
+        socket.emit('createPlayer', {width:window.innerWidth, height: window.innerHeight})
         socket.on('player', (infoPlayer : Player)=>{
-            playerRef.current = infoPlayer
+            setPlayer(infoPlayer)
         })
         socket.on('newPlayer', (data)=>{
-            allPlayerRef.current = data
+            setAllPlayer([...allPlayer, data])
         })
-        // socket.emit('point')
+        socket.on('removePlayer', (data)=>{
+            setAllPlayer([...data])
+        })
     return () => {
     socket.off('player');
-};
-}, [socket, canvasRef.current]);
-    // function updateOffset(mouseX : number, mouseY: number) {
-    //     if( !canvasRef.current) return
-    //     const speed = 0.1; 
-    //     const targetPositionX = (mouseX - canvasRef.current.width / 2) * speed;
-    //     const targetPositionY = (mouseY - canvasRef.current.height / 2) * speed;
-    //     const newTargetOffset = {x: -targetPositionX, y: -targetPositionY}
-    //     console.log("target",newTargetOffset);
+    socket.off('newPlayer');
+    socket.off('removePlayer');
+    };
+    }, [socket]);
 
-    //     setTargetOffset(newTargetOffset)
-    // }
     useMove((event)=>{
-        if(!canvasRef.current) return
-        const rect = canvasRef.current.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
-        setMousePosition({x:mouseX, y:mouseY})
-        // updateOffset(mouseX, mouseY);
+        socket.emit("position",{x:event.clientX, y: event.clientY})
+      
     })
 
     return (
-            <canvas ref={canvasRef} id="canvas" ></canvas>
+            <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight} id="canvas" ></canvas>
     );
 
 }
