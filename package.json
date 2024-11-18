@@ -1,0 +1,13 @@
+{
+    "name": "agario",
+    "version": "1.0.0",
+    "description": "",
+    "main": "main.js",
+    "scripts": {
+      "start-back": "cd agario_back && node main.js",
+      "start-front": " cd agario_front && npm start"
+    },
+    "author": "",
+    "license": "ISC"
+  }
+  
