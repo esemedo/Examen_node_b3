@@ -16,3 +16,7 @@ npm run start-back
 
 Open at http://localhost:3001
 
+## Fonctionnalité
+
+- branche main : déplacement en temps réel
+- branche movement : carte qui s’étend dans toutes les directions
