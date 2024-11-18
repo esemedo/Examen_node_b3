@@ -22,7 +22,8 @@ app.get('/', (req, res) => {
    })
 
 io.on('connection', (socket)=> {
-
+    console.log(socket.id);
+    
 })
 
 server.listen(port, () => { console.log("Server running") });
