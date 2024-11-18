@@ -41,7 +41,7 @@ io.on('connection', (socket)=> {
         const newPlayer = {id: socket.id, color: getRandomColor(), point: 1, x:xNewPlayer, y:yNewPlayer}
         allPlayer.push(newPlayer)
         socket.emit("player", newPlayer)
-        io.emit("newPlayer", allPlayer[allPlayer.length-1])
+        io.emit("newPlayer", allPlayer)
         
     })
     socket.on('position', (data)=>{
@@ -50,7 +50,7 @@ io.on('connection', (socket)=> {
         allPlayer[playerIndex].x = data.x
         allPlayer[playerIndex].y = data.y
         socket.emit("player", allPlayer[playerIndex])
-        io.emit("newPlayer", allPlayer[playerIndex])
+        io.emit("newPlayer", allPlayer)
     })
 
 
