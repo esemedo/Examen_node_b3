@@ -8,6 +8,8 @@ type Player = {
     point : number
     x: number, 
     y : number ,
+    id: string,
+
 }
 
 type AllPlayer = {

@@ -27,8 +27,8 @@ let allPlayer = []
 io.on('connection', (socket)=> {
     console.log("Connecion client : "+ socket.id);
     socket.on('createPlayer', (data)=> {
-        const allXPosition = allPlayer.map(player => ({start:player.info.x, end: player.info.x + (player.info.point*10)}))
-        const allYPosition = allPlayer.map(player =>({start:player.info.y, end: player.info.y + (player.info.point*10)}))
+        const allXPosition = allPlayer.map(player => ({start:player.x, end: player.x + (player.point*10)}))
+        const allYPosition = allPlayer.map(player =>({start:player.y, end: player.y + (player.point*10)}))
         let xNewPlayer = getRandomInt(data.width)   
         let yNewPlayer = getRandomInt(data.height)   
         // ne pas apparaitre sur un autre joueur
@@ -38,17 +38,27 @@ io.on('connection', (socket)=> {
         while (allYPosition.filter((position)=> yNewPlayer > position.start && yNewPlayer < position.end).length >0) {
             yNewPlayer = getRandomInt(data.height)
         }
-        const newPlayer = {color: getRandomColor(), point: 1, x:xNewPlayer, y:yNewPlayer}
-        allPlayer.push({id: socket.id, info: newPlayer})
+        const newPlayer = {id: socket.id, color: getRandomColor(), point: 1, x:xNewPlayer, y:yNewPlayer}
+        allPlayer.push(newPlayer)
         socket.emit("player", newPlayer)
         io.emit("newPlayer", allPlayer)
         
     })
+    socket.on('position', (data)=>{
+        const playerIndex = allPlayer.map((item)=> item.id).indexOf(socket.id)
+        if(playerIndex === -1) return
+        allPlayer[playerIndex].x = data.x
+        allPlayer[playerIndex].y = data.y
+        socket.emit("player", allPlayer[playerIndex])
+        io.emit("newPlayer", allPlayer)
+    })
+
+
     socket.on('disconnect', () => {
         console.log('Client déconnecté :', socket.id);
         const allPlayerFiltered = allPlayer.filter((player)=> player.id !== socket.id)
         allPlayer= allPlayerFiltered
-        io.emit("newPlayer", allPlayerFiltered)
+        io.emit("removePlayer", allPlayerFiltered)
 
     });
 })
